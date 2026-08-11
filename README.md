@@ -1,36 +1,41 @@
-Pre-Entrega 1:
+# Pre-Entrega 1
 
 En este caso de sube todo el material requerido en la pre-entrega 1 (carpeta nicolasbalbi-proyecto-dataops).
 
 Para inicializar el entorno:
 
-1) Validar credenciales activas
-  aws sts get-caller-identity
+1) Validar credenciales activas de AWS:
+   
+    ```aws sts get-caller-identity ```
 
-2) Ejecutar el Bootstrap: Crea el bucket y la tabla requeridos para guardar el
+3) Ejecutar el Bootstrap: Crea el bucket y la tabla requeridos para guardar el
 estado remoto. El bucket de S3 que se creara tendra como nombre "coderhouse-tfstate-backend-nbalbi-2026-prentrega1-dev"
 
-    cd bootstrap
+    ```cd bootstrap ```
    
-    # Inicializar y aplicar
+    ## Inicializar y aplicar
 
-    terraform init
-    terraform apply -auto-approve
+    ```terraform init```
    
-    # Volver a la raíz del proyecto
-    cd ..
+    ```terraform apply -auto-approve```
+   
+    Volver a la raíz del proyecto
+   
+    ```cd ..```
 
-4) Desplegar entorno dev/
+5) ## Desplegar entorno dev/
    
-    cd environments/dev
+    ```cd environments/dev```
    
      1. Inicializar con conexión al Backend Remoto en S3
 
-    terraform init
+    ```terraform init```
 
      2. Validar sintaxis de Terraform
-    terraform validate
+        
+    ```terraform validate```
 
      3. Aplicar infraestructura en AWS
-    terraform apply -auto-approve
+   
+    ```terraform apply -auto-approve```
   
