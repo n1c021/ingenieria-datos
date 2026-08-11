@@ -24,13 +24,13 @@ estado remoto. El bucket de S3 que se creara tendra como nombre "coderhouse-tfst
    
     cd environments/dev
    
-    # 1. Inicializar con conexión al Backend Remoto en S3
+     1. Inicializar con conexión al Backend Remoto en S3
 
     terraform init
 
-    # 2. Validar sintaxis de Terraform
+     2. Validar sintaxis de Terraform
     terraform validate
 
-    # 3. Aplicar infraestructura en AWS
+     3. Aplicar infraestructura en AWS
     terraform apply -auto-approve
   
