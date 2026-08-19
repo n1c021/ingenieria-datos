@@ -1,0 +1,46 @@
+# -------------------------------------------------------------------
+# AKHQ : Panel web para administrar Kafka
+# -------------------------------------------------------------------
+
+# Servicio
+apiVersion: v1
+kind: Service
+metadata:
+  name: akhq
+spec:
+ type: LoadBalancer  # para que se puede acceder directamente desde la pc con http://localhost:8080
+ selector:
+    app: akhq
+ ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+
+---
+
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: akhq
+spec:
+  replicas: 1 # cantidad de contenedores creados
+  selector:
+    matchLabels:
+      app: akhq
+  template:
+    metadata:
+      labels:
+        app: akhq
+    spec:
+      containers:
+        - name: akhq
+          image: tchiotludo/akhq:latest
+          ports:
+            - name: http
+              containerPort: 8080 
+
+          envFrom:
+            - configMapRef:
+                name: akhq-config
+

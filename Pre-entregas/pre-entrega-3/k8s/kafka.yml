@@ -1,0 +1,70 @@
+# -------------------------------------------------------------------
+# Apache Kafka: Broker principal de eventos
+# -------------------------------------------------------------------
+  
+# Servicio
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+spec:
+  type: LoadBalancer
+  selector:
+    app: kafka
+  ports:
+    - name: internal
+      port: 29092
+      targetPort: 29092
+
+    - name: external
+      port: 9092
+      targetPort: 9092
+  
+
+---
+
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka
+spec:
+  replicas: 1 # cantidad de contenedores creados
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      # Evita que Kubernetes inyecte automáticamente variables
+      # como KAFKA_PORT provenientes del Service "kafka".
+      enableServiceLinks: false    
+  
+      containers:
+        - name: kafka
+          image: confluentinc/cp-kafka:7.5.0
+
+          ports:
+            - name: internal
+              containerPort: 29092
+
+            - name: external
+              containerPort: 9092
+
+          envFrom:
+            - configMapRef:
+                name: kafka-config
+
+          readinessProbe:
+            tcpSocket:
+              port: 29092
+            initialDelaySeconds: 15
+            periodSeconds: 10
+
+          livenessProbe:
+            tcpSocket:
+              port: 29092
+            initialDelaySeconds: 30
+            periodSeconds: 20
