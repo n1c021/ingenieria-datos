@@ -1,0 +1,13 @@
+# AKHQ: Configmap
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: akhq-config
+data:
+  AKHQ_CONFIGURATION: |
+    akhq:
+      connections:
+        kafka:
+          properties:
+            bootstrap.servers: "kafka:29092"
