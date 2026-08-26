@@ -4,10 +4,10 @@ En este repositorio se encuentran las diferentes pre-entregas realizadas durante
 
 ## Pre-entregas
 
-| Pre-entrega                                                                                      
+| Pre-entregas                                                                                      
 | ------------------------------------------------------------------------------------------------ 
 | [Pre-entrega 1](https://github.com/n1c021/ingenieria-datos/tree/main/Pre-entregas/pre-entrega-1) 
-| Pre-entrega 2
+| [Pre-entrega 2](https://github.com/n1c021/ingenieria-datos/pull/1)
 | [Pre-entrega 3](https://github.com/n1c021/ingenieria-datos/tree/main/Pre-entregas/pre-entrega-3) 
 
 ## Estructura del repositorio
