@@ -1,0 +1,90 @@
+# ──Permisos al rol de ejecucion de Flink  ────────────────────────────────
+
+data "aws_iam_policy_document" "flink_assume_role" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["kinesisanalytics.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "flink_execution_role" {
+  name               = "${var.environment}-flink-execution-role"
+  assume_role_policy = data.aws_iam_policy_document.flink_assume_role.json
+}
+
+# Permisos para que Flink solo pueda leer/escribir en el data lake 
+data "aws_iam_policy_document" "flink_base_permissions" {
+  statement {
+    sid    = "S3DataLakeAccess"
+    effect = "Allow"
+    actions = [
+      "s3:ListBucket", # Listar en el Buscket
+      "s3:GetObject",  # Leer en el Bucket
+      "s3:PutObject",  # Escribir en el Bucket
+    ]
+    resources = [
+      var.datalake_bucket_arn,
+      "${var.datalake_bucket_arn}/*",
+    ]
+  }
+
+  # Permisos para consumir datos desde Kinesis
+  statement {
+    sid    = "KinesisConsume"
+    effect = "Allow"
+    actions = [
+      "kinesis:GetRecords",
+      "kinesis:GetShardIterator",
+      "kinesis:DescribeStream", # Consultar información sobre el stream.
+      "kinesis:DescribeStreamSummary",
+      "kinesis:ListShards", # Listar los shards
+      "kinesis:SubscribeToShard",
+    ]
+    resources = [var.kinesis_stream_arn]
+  }
+
+  statement {
+    sid    = "CloudWatchLogs"
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_role_policy" "flink_base" {
+  name   = "${var.environment}-flink-base-permissions"
+  role   = aws_iam_role.flink_execution_role.id
+  policy = data.aws_iam_policy_document.flink_base_permissions.json
+}
+
+# Rol de solo lectura para auditoría
+data "aws_iam_policy_document" "audit_assume_role" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "AWS"
+      identifiers = [data.aws_caller_identity.current.account_id != "" ? "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root" : ""]
+    }
+  }
+}
+
+resource "aws_iam_role" "audit_readonly" {
+  name               = "${var.environment}-audit-readonly"
+  assume_role_policy = data.aws_iam_policy_document.audit_assume_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "audit_readonly_attach" {
+  role       = aws_iam_role.audit_readonly.name
+  policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
+}
+
+data "aws_caller_identity" "current" {}
