@@ -1,0 +1,4 @@
+com/coderhouse/lakehouse/LakehouseStreamingJob$Accumulator.class
+com/coderhouse/lakehouse/LakehouseStreamingJob.class
+com/coderhouse/lakehouse/LakehouseStreamingJob$ToRowDataMapper.class
+com/coderhouse/lakehouse/LakehouseStreamingJob$AverageAggregateFunction.class
